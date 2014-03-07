@@ -5,6 +5,13 @@ http://developer.yahoo.com/yui/license.html
 html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,select,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,button,caption,cite,code,dfn,em,input,optgroup,option,select,strong,textarea,th,var{font:inherit}del,ins{text-decoration:none}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:baseline}sub{vertical-align:baseline}legend{color:#000}
 
 @font-face {
+  font-family: 'AftaSans';
+  font-weight:normal;
+  font-style:normal;
+  src: url("AftaSansThin-Regular.otf");
+}
+
+@font-face {
   font-family: 'AlegreyaSC';
   font-weight:normal;
   font-style:normal;
@@ -12,24 +19,124 @@ html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre
 }
 
 html,body {
-  font:normal 13px/19px "AlegreyaSC", "Helvetica", "Arial", sans-serif;
+  font:normal 14px/19px "AftaSans", "Helvetica", "Arial", sans-serif;
+  color:#242825;
+  letter-spacing:.045em;
+}
+
+h1, h2, h3 {
+  font-family: "AlegreyaSC", "Helvetica", "Arial", sans-serif;
+  line-height:145%;
+  color:#000;
+}
+
+h1 { font-size: 32px; }
+h2 { font-size: 28px; }
+h3 { font-size: 23px; }
+
+.clearfix:after {
+  content:"";
+  zoom:1;
+  height:0;
+  clear:both;
+  display:block;
 }
 
 #wrapper {
   width:1040px;
-  min-height:100%;
+  min-height:680px;
   margin:0 auto;
   padding-bottom:90px;
 }
+
+.inner_wrapper {
+  height:700px;
+}
+
+.col {
+  position:relative;
+  padding:10px;
+  margin-top:20px;
+  float:left;
+  min-height:80%;
+}
+
+.one_third {
+  width:30%;
+}
+
+.two_thirds {
+  width:64%;
+}
+
+.left {
+  padding-right:0;
+  border-right:2px dashed #dededf;
+}
+
+.right {
+  padding-left:0;
+  margin-left:10px;
+}
+
+p {
+  margin:10px auto 15px;
+}
+
+#crime_map {
+  position:relative;
+  margin:50px auto;
+  width:450px;
+  height:500px;
+  background:#eeeeee;
+  border:1px solid #cdcdcd;
+  box-shadow:0 2px 5px #868688 inset;
+  -moz-box-shadow:0 2px 5px #868688 inset;
+  -webkit-box-shadow:0 2px 5px #868688 inset;
+  z-index:1;
+}
+
+.crime_modal {
+  z-index:2;
+  position:absolute;
+  padding:5px;
+  border-radius:6px;
+  background:#fefefe;
+  width:228px;
+}
+
+.crime_modal .col {
+  height:auto;
+  margin:5px 0;
+  vertical-align:center;
+  text-align:center;
+}
+
+.close_button {
+  font-size:9px;
+  position:absolute;
+  top:4px;
+  right:3px;
+}
+
+.crime_icon {
+  width:64px;
+  height:64px;
+  margin:auto 5px;
+}
+
+#location_selector { display:none; }
 
 .footer {
   margin-top:-90px;
   border-top:2px solid #d8d9da;
   height:90px;
   box-sizing:border-box;
+  text-align:center;
 }
 
 .header {
   padding:20px;
   height:40px;
+  border-bottom:1px dotted #cccccc;
 }

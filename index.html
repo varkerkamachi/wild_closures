@@ -4,15 +4,115 @@
     <title>Wild Closures with JS</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles.css" media="screen" />
+    <script>
+      var crimes = [
+      'Stabbing', 'Shooting', 'Banana Theft', 'Gazelle Feeding', 'Car Racing', 'Stripping', 'Playing Classical Guitar', 'Oversleeping'
+      ];
+      var locations = [
+      'The Old Mill', 'The Zoo', 'Waterfront', 'City Center', 'The Badlands', 'Highway 1'
+      ];
+    </script>
   </head>
-
+  
   <body>
-    <div id="wrapper">
-      <div class="header">Header</div>
+    <div id="wrapper" class="clearfix">
+      <div class="inner_wrapper">
+        
+        <div class="header">
+          <h1>Wild Closures!</h1>
+        </div><!-- end header //-->
+      
+        <div class="left col one_third">
+          <h2>Choose a crime:</h2>
+          <select name="crime_select" id="crime_selector">
+            <option value="---">choose a crime</option>
+            <script>
+              for(var i=0, max=crimes.length; i<max; i++){
+                document.writeln('<option value="' + crimes[i] + '">' + crimes[i] + '</option>');
+              }
+            </script>
+          </select>
+          <br />
+          <br />
+          <select name="location_select" id="location_selector">
+            <option value="---">choose the location where it happened:</option>
+            <script>
+              for(var i=0, max=locations.length; i<max; i++){
+                document.writeln('<option value="' + locations[i] + '">' + locations[i] + '</option>');
+              }
+            </script>
+          </select>
 
-      <div class="footer">Footer</div>
-    </div>
+          <p>Great, now plot it on the map ></p>
+        </div><!-- end left col //-->
+
+        <div class="right col two_thirds">
+          <div id="crime_map">
+          </div>
+        </div><!-- end right col //-->
+      </div><!-- end inner wrapper //-->
+    </div><!-- end wrapper //-->
+    <div class="footer">Footer</div>
     
   </body>
-
+  <script>
+    // var numbers = [];
+    
+    function crimeReport( crime ){
+      var counter = 0,
+          arr = [],
+          report = '',
+          msg = '';
+      return function(number, location, time){
+        //var el = document.getElementById('crime_map');
+        msg += "Alert! There has been an incident!\n" +
+              number + " " + crime + "(s) happened around " +
+              time + ", at " + location;
+        alert(msg);
+      } 
+    }
+    
+    function buildPopup() {
+      var html = '<div class="crime_modal">';
+      html += '<div class="col"><img src="" class="crime_icon" />';
+      html += '</div></div>';
+      html += '<div class="col">';
+      html += '<div class="close_button">close</div><p>Crime message</p>';
+      html += '</div></div>';
+      return html;
+    }
+    var el = document.getElementById('crime_map'),
+        popper = buildPopup(),
+        crime = document.getElementById('crime_selector'),
+        loc = document.getElementById('location_selector');
+    
+    crime.value = "---";
+    loc.value = "---";
+    crime.addEventListener('change', function(e){
+      if(this.value != "---"){
+        loc.style.display = "block";
+      }
+    });
+    loc.addEventListener('change', function(){
+      if(this.value != "---"){
+        report = crimeReport(crime.value);
+      }
+    });
+    el.addEventListener('click', function(e){ 
+      var xpos = e.pageX - el.offsetLeft;
+      var ypos = e.pageY - el.offsetTop;
+      el.appendChild(popper);
+      console.log('click\nx:' + xpos + "\ny: " + ypos + '\n' + popper); 
+      });
+    el.addEventListener('click', function(e){
+      if(report) {
+        report(5, '10pm', loc.value);
+      }
+    });
+      /*
+    el.addEventListener('click', '.close_button', function(e){
+      el.removeElement(this);
+    });
+    */
+  </script>
 </html>
