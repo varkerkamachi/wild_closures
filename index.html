@@ -57,6 +57,14 @@
   </body>
   <script>
     // var numbers = [];
+    //buildPopup('hhe');
+    var el = document.getElementById('crime_map'),
+        popper = buildPopup,
+        crime = document.getElementById('crime_selector'),
+        loc = document.getElementById('location_selector');
+    
+    crime.value = "---";
+    loc.value = "---";
     
     function crimeReport( crime ){
       var counter = 0,
@@ -68,26 +76,53 @@
         msg += "Alert! There has been an incident!\n" +
               number + " " + crime + "(s) happened around " +
               time + ", at " + location;
-        alert(msg);
+        // alert(msg);
       } 
     }
     
-    function buildPopup() {
-      var html = '<div class="crime_modal">';
-      html += '<div class="col"><img src="" class="crime_icon" />';
-      html += '</div></div>';
-      html += '<div class="col">';
-      html += '<div class="close_button">close</div><p>Crime message</p>';
-      html += '</div></div>';
-      return html;
+    function buildPopup(e, msg) {
+      console.log(document.body.firstChild[0] + e.target.id);
+      var modal = document.createElement('div');
+      modal.setAttribute('class', 'crime_modal');
+      
+      var tip = document.createElement('div');
+      tip.setAttribute('class', 'pointer');
+      
+      var left_col = document.createElement('div');
+      left_col.setAttribute('class', 'col');
+      
+      var modal_img = document.createElement('img');
+      modal_img.setAttribute('src', '');
+      modal_img.setAttribute('class', 'crime_icon');
+      
+      var right_col = document.createElement('div');
+      right_col.setAttribute('class', 'col');
+      
+      var closer = document.createElement('div');
+      closer.setAttribute('class', 'close_button');
+      
+      var closer_text = document.createElement('span');
+      closer_text.innerHTML='close';
+      
+      var text = document.createElement('p');
+      text.innerHTML=msg;
+      
+      left_col.appendChild(modal_img);
+      right_col.appendChild(closer_text);
+      right_col.appendChild(text);
+      right_col.appendChild(tip);
+      modal.appendChild(left_col);
+      modal.appendChild(right_col);
+      
+      e.target.appendChild(modal);
+      // var html = '<div class="crime_modal">';
+      // html += '<div class="col"><img src="" class="crime_icon" />';
+      // html += '</div></div>';
+      // html += '<div class="col">';
+      // html += '<div class="close_button">close</div><p>' + msg + '</p>';
+      // html += '</div></div>';
+      // return html;
     }
-    var el = document.getElementById('crime_map'),
-        popper = buildPopup(),
-        crime = document.getElementById('crime_selector'),
-        loc = document.getElementById('location_selector');
-    
-    crime.value = "---";
-    loc.value = "---";
     crime.addEventListener('change', function(e){
       if(this.value != "---"){
         loc.style.display = "block";
@@ -101,7 +136,7 @@
     el.addEventListener('click', function(e){ 
       var xpos = e.pageX - el.offsetLeft;
       var ypos = e.pageY - el.offsetTop;
-      el.appendChild(popper);
+      el.appendChild(buildPopup(e, 'heh'));
       console.log('click\nx:' + xpos + "\ny: " + ypos + '\n' + popper); 
       });
     el.addEventListener('click', function(e){
