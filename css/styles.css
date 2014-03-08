@@ -133,8 +133,8 @@ p {
   margin:auto 5px;
 }
 
-#location_selector { display:none; }
-
+#location_selector,
+#location_selector + p { display:none; }
 .footer {
   margin-top:-90px;
   border-top:2px solid #d8d9da;
