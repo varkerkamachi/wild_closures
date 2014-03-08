@@ -43,7 +43,7 @@
             </script>
           </select>
 
-          <p>Great, now plot it on the map ></p>
+          <p class="instructions" data-subject="instructions">Great, now plot it on the map ></p>
         </div><!-- end left col //-->
 
         <div class="right col two_thirds">
@@ -56,8 +56,7 @@
     
   </body>
   <script>
-    // var numbers = [];
-    
+    //our wild closure...
     function crimeReport( crime ){
       var counter = 0,
           arr = [],
@@ -83,11 +82,14 @@
     }
     var el = document.getElementById('crime_map'),
         popper = buildPopup(),
+        instructionEl = document.getElementsByClassName('instructions'),
         crime = document.getElementById('crime_selector'),
+        times = ['am', 'pm'],
         loc = document.getElementById('location_selector');
+        //default vals for select menus - reset on pageload
+        crime.value = "---";
+        loc.value = "---";
     
-    crime.value = "---";
-    loc.value = "---";
     crime.addEventListener('change', function(e){
       if(this.value != "---"){
         loc.style.display = "block";
@@ -96,6 +98,8 @@
     loc.addEventListener('change', function(){
       if(this.value != "---"){
         report = crimeReport(crime.value);
+        console.log(instructionEl[0]);
+        instructionEl[0].style.display = "block";
       }
     });
     el.addEventListener('click', function(e){ 
@@ -106,7 +110,13 @@
       });
     el.addEventListener('click', function(e){
       if(report) {
-        report(5, '10pm', loc.value);
+        var num = Math.floor((Math.random() * 78)+1),
+            hr = Math.floor((Math.random() * 11)+1),
+            ampm = times[Math.floor((Math.random() * 1)+1)];
+        console.log("num: " + num + "\nhr: " + hr + "\nampm: " + ampm);
+        report(num, hr + ampm, loc.value);
+        num = hr = ampm = null;
+        console.log("num: " + num + "\nhr: " + hr + "\nampm: " + ampm);
       }
     });
       /*
