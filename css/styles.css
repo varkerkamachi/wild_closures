@@ -99,7 +99,7 @@ p {
   margin:50px auto;
   width:450px;
   height:500px;
-  background:#dadbdc;
+  background:#dadbdc url('../images/map-bkgnd.jpg') center center no-repeat;
   border:1px solid #cdcdcd;
   box-shadow:0 2px 5px #868688 inset;
   -moz-box-shadow:0 2px 5px #868688 inset;
