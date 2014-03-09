@@ -111,7 +111,7 @@
       modalCount--;          
       console.log("cc: " + modalCount);
       
-      if(modals.length < 1){
+      if(modals.length < 2){
         crime.value = "---";
         loc.style.display = "none";
         instructionEl[0].style.display = "none";
@@ -199,7 +199,7 @@
               reportMsg = report(num, hr + ampm, loc.value);
               buildPopup(e, reportMsg);
             }
-        if(reportCount > 5){
+        if(reportCount > 15){
           num = hr = ampm = "";
           report = "";//stop more elements from being added....
         }
