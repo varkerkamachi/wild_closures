@@ -131,9 +131,8 @@
       var left_col = document.createElement('div');
       left_col.setAttribute('class', 'col');
       
-      var modal_img = document.createElement('img');
-      modal_img.setAttribute('src', '');
-      modal_img.setAttribute('class', 'crime_icon');
+      var modal_img = document.createElement('div');
+      modal_img.setAttribute('class', 'crime_icon ' + crime.value.toLowerCase().replace(/\s/g, '-') + '');
       
       var right_col = document.createElement('div');
       right_col.setAttribute('class', 'col');
@@ -162,7 +161,7 @@
       var xpos = e.pageX - mapEl.offsetLeft;
       var ypos = e.pageY - mapEl.offsetTop;
       modal.style.left = (xpos-xpos - 110) + 'px';
-      modal.style.top = (ypos-ypos - 125) + 'px';
+      modal.style.top = (ypos-ypos - 135) + 'px';
       e.target.appendChild(modal);
       
     }

@@ -126,37 +126,45 @@ p {
 }
 
 .the_old_mill{
+  background:url('../images/old-mill.jpg') center center no-repeat;
   top:70px;
   left:25px;
 }
 .the_zoo{
+  background:url('../images/zoo.jpg') center center no-repeat;
   top: 100px;
   left: 35%;
 }
 .the_waterfront{
+  background:url('../images/waterfront.jpg') center center no-repeat;
   top:10px;
   left:315px;
 }
 .the_city_center{
+  background:url('../images/city-center.jpg') center center no-repeat;
   top:230px;
   left:175px;
 }
 .the_badlands{
+  background:url('../images/badlands.jpg') center center no-repeat;
   top:400px;
   left:65px;
 }
 .highway_1{
+  background:url('../images/highway1.jpeg') center center no-repeat;
   top:290px;
   left:325px;
 }
 
 .map_locations > span {
   position:absolute;
-  bottom:18px;
-  left:5px;
-  width:65px;
+  bottom:12px;
+  left:10px;
+  width:55px;
   text-align:center;
-  text-shadow:0 1px 0 #ffffff;
+  border-radius:14px;
+  padding:4px 0;
+  background:rgba(255,255,255, .75);
 }
 
 .crime_modal {
@@ -190,10 +198,13 @@ p {
   position:absolute;
   top:5px;
   right:5px;
+  background:url('../images/close.png') center center no-repeat;
+  opacity:.75;
 }
 
 .close_button:hover {
   cursor:pointer;
+  opacity:1;
 }
 
 .pointer {
@@ -210,6 +221,31 @@ p {
   width:46px;
   height:46px;
   margin:auto 5px;
+}
+
+.crime_icon.shooting {
+  background:url('../images/shooting.jpg') -5px top no-repeat;
+}
+.crime_icon.stabbing {
+  background:url('../images/stabbing.jpg') 1px 1px no-repeat;
+}
+.crime_icon.banana-theft {
+  background:url('../images/banana-theft.jpg') -25px -2px no-repeat;
+}
+.crime_icon.car-racing {
+  background:url('../images/car-racing.jpg') -41px -31px no-repeat;
+}
+.crime_icon.gazelle-feeding {
+  background:url('../images/gazelle-feeding.jpg') -22px -38px no-repeat;
+}
+.crime_icon.stripping {
+  background:url('../images/stripping.jpg') 1px 1px no-repeat;
+}
+.crime_icon.oversleeping {
+  background:url('../images/oversleeping.jpg') center center no-repeat;
+}
+.crime_icon.playing-classical-guitar {
+  background:url('../images/classical-guitar-playing.jpg') -25px -45px no-repeat;
 }
 
 #location_selector,
