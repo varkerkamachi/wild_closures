@@ -3,7 +3,12 @@ RESET
 http://developer.yahoo.com/yui/license.html
 */
 html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,button,textarea,select,p,blockquote,th,td{margin:0;padding:0}table{border-collapse:collapse;border-spacing:0}fieldset,img{border:0}address,button,caption,cite,code,dfn,em,input,optgroup,option,select,strong,textarea,th,var{font:inherit}del,ins{text-decoration:none}li{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal}q:before,q:after{content:''}abbr,acronym{border:0;font-variant:normal}sup{vertical-align:baseline}sub{vertical-align:baseline}legend{color:#000}
-
+@font-face{
+  font-family:"AlegreyaSC";
+  font-style:normal;
+  src:url('AlegreyaSC-Regular.otf');
+  font-weight:normal;
+}
 @font-face {
   font-family: 'AftaSans';
   font-weight:normal;
@@ -12,14 +17,16 @@ html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre
 }
 
 @font-face {
-  font-family: 'AlegreyaSC';
-  font-weight:normal;
+  font-family: 'Arimo';
+  src: url("Arimo-Bold.ttf");
   font-style:normal;
-  src: url("AlegreyaSC-Regular.otf");
+  font-weight:normal;
 }
 
 html,body {
-  font:normal 14px/19px "AftaSans", "Helvetica", "Arial", sans-serif;
+  font-family: "Arimo", "Helvetica", "Arial", sans-serif;
+  font-size:14px;
+  font-weight:normal;
   color:#242825;
   letter-spacing:.045em;
 }
@@ -33,6 +40,10 @@ h1, h2, h3 {
 h1 { font-size: 32px; }
 h2 { font-size: 28px; }
 h3 { font-size: 23px; }
+
+select {
+  font-family:"AftaSans", sans-serif;
+}
 
 .clearfix:after {
   content:"";
@@ -88,7 +99,7 @@ p {
   margin:50px auto;
   width:450px;
   height:500px;
-  background:#eeeeee;
+  background:#dadbdc;
   border:1px solid #cdcdcd;
   box-shadow:0 2px 5px #868688 inset;
   -moz-box-shadow:0 2px 5px #868688 inset;
@@ -96,13 +107,66 @@ p {
   z-index:1;
 }
 
+.map_locations {
+  width:75px;
+  height:75px;
+  border-radius:50px;
+  box-shadow:0 0 4px 1px #a9a7a6;
+  background:#eeeeee;
+  font-size:9px;
+  line-height:8px;
+  color:#696920;
+  position:absolute;
+}
+
+.map_locations:hover {
+  box-shadow:0 0 4px 5px #6977f8;
+  cursor:pointer;
+  transition:box-shadow 0.35s ease-in-out;
+}
+
+.the_old_mill{
+  top:70px;
+  left:25px;
+}
+.the_zoo{
+  top: 100px;
+  left: 35%;
+}
+.the_waterfront{
+  top:10px;
+  left:315px;
+}
+.the_city_center{
+  top:230px;
+  left:175px;
+}
+.the_badlands{
+  top:400px;
+  left:65px;
+}
+.highway_1{
+  top:290px;
+  left:325px;
+}
+
+.map_locations > span {
+  position:absolute;
+  bottom:18px;
+  left:5px;
+  width:65px;
+  text-align:center;
+  text-shadow:0 1px 0 #ffffff;
+}
+
 .crime_modal {
-  z-index:2;
+  z-index:5;
   position:absolute;
   padding:5px;
   border-radius:6px;
-  background:#fefefe;
-  width:228px;
+  background:#feffff;
+  width:330px;
+  box-shadow:0 14px 6px 3px #ccc;
 }
 
 .crime_modal .col {
@@ -112,24 +176,39 @@ p {
   text-align:center;
 }
 
+.crime_modal .col:nth-child(2) {
+  min-width:60%;
+  width:70%;
+  padding:5px;
+  font-size:10px;
+  line-height:1.2em;
+  text-align:left;
+}
+
 .close_button {
-  font-size:9px;
+  font-size:8px;
   position:absolute;
-  top:4px;
-  right:3px;
+  top:5px;
+  right:5px;
+}
+
+.close_button:hover {
+  cursor:pointer;
 }
 
 .pointer {
-  border:6px solid #ffffff;
-  border-bottom-color:transparent;
+  border-style:solid;
+  border-width:22px 22px 0;
+  border-color: #feffff transparent;
   position:absolute;
-  bottom:0;
-  left:50%;
+  height:0;
+  bottom:-18px;
+  left:35%;
 }
 
 .crime_icon {
-  width:64px;
-  height:64px;
+  width:46px;
+  height:46px;
   margin:auto 5px;
 }
 

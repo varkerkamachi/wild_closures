@@ -9,7 +9,7 @@
       'Stabbing', 'Shooting', 'Banana Theft', 'Gazelle Feeding', 'Car Racing', 'Stripping', 'Playing Classical Guitar', 'Oversleeping'
       ];
       var locations = [
-      'The Old Mill', 'The Zoo', 'Waterfront', 'City Center', 'The Badlands', 'Highway 1'
+      'The Old Mill', 'The Zoo', 'The Waterfront', 'The City Center', 'The Badlands', 'Highway 1'
       ];
     </script>
   </head>
@@ -48,19 +48,28 @@
 
         <div class="right col two_thirds">
           <div id="crime_map">
+            <script>
+              for(var i=0, max=locations.length; i<max; i++){
+                document.writeln('<div class="map_locations ' + locations[i].toLowerCase().replace(/\s/g, '_') + '"><span>' + locations[i] + '</span></div>');
+              }
+            </script>
           </div>
         </div><!-- end right col //-->
       </div><!-- end inner wrapper //-->
     </div><!-- end wrapper //-->
-    <div class="footer">Footer</div>
+    <div class="footer">&copy; Copyright 2014 varker kamachi</div>
     
   </body>
   <script>
-  var el = document.getElementById('crime_map'),
+  var mapEl = document.getElementById('crime_map'),
+      locations = document.getElementsByClassName('map_locations'),
       popper = buildPopup,
       instructionEl = document.getElementsByClassName('instructions'),
-      crime = document.getElementById('crime_selector'),
       times = ['am', 'pm'],
+      crime = document.getElementById('crime_selector'),
+      modals = document.querySelectorAll('#crime_map .crime_modal'),
+      modalCount = 0,
+      reportCount = 0,
       loc = document.getElementById('location_selector');
       //default vals for select menus - reset on pageload
       crime.value = "---";
@@ -72,19 +81,49 @@
           arr = [],
           report = '',
           msg = '';
-      return function(number, location, time){
-        //var el = document.getElementById('crime_map');
-        msg += "Alert! There has been an incident!\n" +
+      return function(number, time, location){
+        //var mapEl = document.getElementById('crime_map');
+        counter ++;
+        var warningMsg = '';
+        if(counter < 5) {
+          warningMsg = "Still pretty safe, really."
+        }
+        else if(counter >= 5 && counter < 15) {
+          warningMsg = "I'd watch myself if I were you.<br />Don't go there after dark!"
+        }
+        else if(counter >= 15) {
+          warningMsg = "This place is extremely dangerous!<br />Stay the hell out of there if you value your life!"
+        }
+        
+        msg = "<strong>Alert! There has been an incident!</strong><br />" +
               number + " " + crime + "(s) happened around " +
-              time + ", at " + location;
-        // alert(msg);
+              time + ", <br />at " + location + '. <br />This has happened ' + 
+              counter + ' times at this location.<br />' +
+              warningMsg;
+        return msg;
       } 
     }
+    //close  modals
+    var closeMe = function closePopper(e, id){
+      var elmToRemove = e.target.parentNode.parentNode;
+      var modals = document.querySelectorAll('.crime_modal');
+      elmToRemove.parentNode.removeChild(elmToRemove);
+      modalCount--;          
+      console.log("cc: " + modalCount);
+      
+      if(modals.length < 1){
+        crime.value = "---";
+        loc.style.display = "none";
+        instructionEl[0].style.display = "none";
+      }
+    }
+    
     
     function buildPopup(e, msg) {
-      console.log(document.body.firstChild[0] + e.target.id);
       var modal = document.createElement('div');
       modal.setAttribute('class', 'crime_modal');
+      modal.setAttribute('id', 'crime_modal' + modalCount + '');
+      modal.addEventListener('click', function(e){ e.stopPropagation();});
       
       var tip = document.createElement('div');
       tip.setAttribute('class', 'pointer');
@@ -101,6 +140,8 @@
       
       var closer = document.createElement('div');
       closer.setAttribute('class', 'close_button');
+      closer.addEventListener('click', function(e){ return closeMe(e, modal.id);});
+      console.log("mid: " + modal.id);
       
       var closer_text = document.createElement('span');
       closer_text.innerHTML='close';
@@ -108,23 +149,31 @@
       var text = document.createElement('p');
       text.innerHTML=msg;
       
+      closer.appendChild(closer_text);
       left_col.appendChild(modal_img);
-      right_col.appendChild(closer_text);
       right_col.appendChild(text);
-      right_col.appendChild(tip);
       modal.appendChild(left_col);
       modal.appendChild(right_col);
-      
-      e.target.appendChild(modal);
-      // var html = '<div class="crime_modal">';
-      // html += '<div class="col"><img src="" class="crime_icon" />';
-      // html += '</div></div>';
-      // html += '<div class="col">';
-      // html += '<div class="close_button">close</div><p>' + msg + '</p>';
-      // html += '</div></div>';
-      // return html;
-    }
+      modal.appendChild(closer);
+      modal.appendChild(tip);
 
+      reportCount++;
+      
+      var xpos = e.pageX - mapEl.offsetLeft;
+      var ypos = e.pageY - mapEl.offsetTop;
+      modal.style.left = (xpos-xpos - 110) + 'px';
+      modal.style.top = (ypos-ypos - 125) + 'px';
+      e.target.appendChild(modal);
+      
+    }
+    //var modals = document.querySelectorAll('#crime_map .crime_modal')
+    
+    document.addEventListener('DOMNodeInserted', function(e){
+      modalCount++;
+      console.log(modalCount + 'inserted!');
+    });
+    
+    //reset our drop-downs and hide instruction text again
     crime.addEventListener('change', function(e){
       if(this.value != "---"){
         loc.style.display = "block";
@@ -133,31 +182,30 @@
     loc.addEventListener('change', function(){
       if(this.value != "---"){
         report = crimeReport(crime.value);
-        console.log(instructionEl[0]);
         instructionEl[0].style.display = "block";
       }
     });
-    el.addEventListener('click', function(e){ 
-      var xpos = e.pageX - el.offsetLeft;
-      var ypos = e.pageY - el.offsetTop;
-      el.appendChild(buildPopup(e, 'heh'));
-      console.log('click\nx:' + xpos + "\ny: " + ypos + '\n' + popper); 
-      });
-    el.addEventListener('click', function(e){
-      if(report) {
-        var num = Math.floor((Math.random() * 78)+1),
-            hr = Math.floor((Math.random() * 11)+1),
-            ampm = times[Math.floor((Math.random() * 1)+1)];
-        console.log("num: " + num + "\nhr: " + hr + "\nampm: " + ampm);
-        report(num, hr + ampm, loc.value);
-        num = hr = ampm = null;
-        console.log("num: " + num + "\nhr: " + hr + "\nampm: " + ampm);
+    
+    //trigger modals only on location elements inside map
+    for(var i=0, len=locations.length; i<len; i++) {
+      locations[i].addEventListener('click', function(e){ 
+        if(typeof report == undefined) {
+          return false;
+        }
+        else{
+          var num = Math.floor((Math.random() * 18)+1),
+              hr = Math.floor((Math.random() * 11)+1),
+              ampm = times[Math.floor((Math.random() * 1)+1)],
+              reportMsg = report(num, hr + ampm, loc.value);
+              buildPopup(e, reportMsg);
+            }
+        if(reportCount > 5){
+          num = hr = ampm = "";
+          report = "";//stop more elements from being added....
+        }
+        });
       }
-    });
-      /*
-    el.addEventListener('click', '.close_button', function(e){
-      el.removeElement(this);
-    });
-    */
+      //mapEl.childNodes.addEventListener('click', function(e){ alert('child clicked!'); e.stopPropagation(); })
+      
   </script>
 </html>
