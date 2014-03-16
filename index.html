@@ -4,13 +4,13 @@
     <title>Wild Closures with JS</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/styles.css" media="screen" />
+    <script src="js/utilities.js"></script>
+    <script src="js/app.js"></script>
     <script>
-      var crimes = [
-      'Stabbing', 'Shooting', 'Banana Theft', 'Gazelle Feeding', 'Car Racing', 'Stripping', 'Playing Classical Guitar', 'Oversleeping'
-      ];
-      var locations = [
-      'The Old Mill', 'The Zoo', 'The Waterfront', 'The City Center', 'The Badlands', 'Highway 1'
-      ];
+    var app = new CrimeApp(),
+        crimes = app.getCrimes(),
+        locations = app.getLocations(),
+        utils = new Utils();
     </script>
   </head>
   
@@ -24,25 +24,33 @@
       
         <div class="left col one_third">
           <h2>Choose a crime:</h2>
-          <select name="crime_select" id="crime_selector">
-            <option value="---">choose a crime</option>
             <script>
-              for(var i=0, max=crimes.length; i<max; i++){
-                document.writeln('<option value="' + crimes[i] + '">' + crimes[i] + '</option>');
-              }
+              var data={
+                'nameKey': 'crime_select',
+                'idKey': 'crime_selector',
+                'elementClassKey': '',
+                'defaultVals': {
+                  'value': '---',
+                  'text': 'choose a crime'
+                  },
+                };
+              document.writeln(utils.buildSelectMenu(crimes, data));
             </script>
-          </select>
           <br />
           <br />
-          <select name="location_select" id="location_selector">
-            <option value="---">choose the location where it happened:</option>
-            <script>
-              for(var i=0, max=locations.length; i<max; i++){
-                document.writeln('<option value="' + locations[i] + '">' + locations[i] + '</option>');
-              }
-            </script>
-          </select>
-
+          <script>
+            var data={
+              'nameKey': 'location_select',
+              'idKey': 'location_selector',
+              'elementClassKey': '',
+              'defaultVals': {
+                'value': '---',
+                'text': 'choose the location where it happened'
+                },
+              };
+            document.writeln(utils.buildSelectMenu(locations, data));
+          </script>
+          
           <p class="instructions" data-subject="instructions">Great, now plot it on the map ></p>
         </div><!-- end left col //-->
 
@@ -61,150 +69,77 @@
     
   </body>
   <script>
+  document.onReady = function() {
   var mapEl = document.getElementById('crime_map'),
       locations = document.getElementsByClassName('map_locations'),
-      popper = buildPopup,
+      popper = utils.buildPopup,
       instructionEl = document.getElementsByClassName('instructions'),
       times = ['am', 'pm'],
       crime = document.getElementById('crime_selector'),
       modals = document.querySelectorAll('#crime_map .crime_modal'),
+      report = '',
       modalCount = 0,
       reportCount = 0,
       loc = document.getElementById('location_selector');
       //default vals for select menus - reset on pageload
       crime.value = "---";
       loc.value = "---";
-  
-    //our wild closure...
-    function crimeReport( crime ){
-      var counter = 0,
-          arr = [],
-          report = '',
-          msg = '';
-      return function(number, time, location){
-        //var mapEl = document.getElementById('crime_map');
-        counter ++;
-        var warningMsg = '';
-        if(counter < 5) {
-          warningMsg = "Still pretty safe, really."
-        }
-        else if(counter >= 5 && counter < 15) {
-          warningMsg = "I'd watch myself if I were you.<br />Don't go there after dark!"
-        }
-        else if(counter >= 15) {
-          warningMsg = "This place is extremely dangerous!<br />Stay the hell out of there if you value your life!"
-        }
-        
-        msg = "<strong>Alert! There has been an incident!</strong><br />" +
-              number + " " + crime + "(s) happened around " +
-              time + ", <br />at " + location + '. <br />This has happened ' + 
-              counter + ' times at this location.<br />' +
-              warningMsg;
-        return msg;
-      } 
-    }
-    //close  modals
-    var closeMe = function closePopper(e, id){
-      var elmToRemove = e.target.parentNode.parentNode;
-      var modals = document.querySelectorAll('.crime_modal');
-      elmToRemove.parentNode.removeChild(elmToRemove);
-      modalCount--;          
-      console.log("cc: " + modalCount);
-      
-      if(modals.length < 2){
-        crime.value = "---";
-        loc.style.display = "none";
-        instructionEl[0].style.display = "none";
-      }
-    }
-    
-    
-    function buildPopup(e, msg) {
-      var modal = document.createElement('div');
-      modal.setAttribute('class', 'crime_modal');
-      modal.setAttribute('id', 'crime_modal' + modalCount + '');
-      modal.addEventListener('click', function(e){ e.stopPropagation();});
-      
-      var tip = document.createElement('div');
-      tip.setAttribute('class', 'pointer');
-      
-      var left_col = document.createElement('div');
-      left_col.setAttribute('class', 'col');
-      
-      var modal_img = document.createElement('div');
-      modal_img.setAttribute('class', 'crime_icon ' + crime.value.toLowerCase().replace(/\s/g, '-') + '');
-      
-      var right_col = document.createElement('div');
-      right_col.setAttribute('class', 'col');
-      
-      var closer = document.createElement('div');
-      closer.setAttribute('class', 'close_button');
-      closer.addEventListener('click', function(e){ return closeMe(e, modal.id);});
-      console.log("mid: " + modal.id);
-      
-      var closer_text = document.createElement('span');
-      closer_text.innerHTML='close';
-      
-      var text = document.createElement('p');
-      text.innerHTML=msg;
-      
-      closer.appendChild(closer_text);
-      left_col.appendChild(modal_img);
-      right_col.appendChild(text);
-      modal.appendChild(left_col);
-      modal.appendChild(right_col);
-      modal.appendChild(closer);
-      modal.appendChild(tip);
 
-      reportCount++;
-      
-      var xpos = e.pageX - mapEl.offsetLeft;
-      var ypos = e.pageY - mapEl.offsetTop;
-      modal.style.left = (xpos-xpos - 110) + 'px';
-      modal.style.top = (ypos-ypos - 135) + 'px';
-      e.target.appendChild(modal);
-      
-    }
-    //var modals = document.querySelectorAll('#crime_map .crime_modal')
-    
+  utils.defaults.mapEl = document.getElementById('crime_map');
+  utils.defaults.loc = document.getElementById('location_selector');
+  utils.defaults.instructionEl = document.getElementsByClassName('instructions');
+
     document.addEventListener('DOMNodeInserted', function(e){
       modalCount++;
-      console.log(modalCount + 'inserted!');
+      utils.defaults.modalCount++;
     });
-    
+
+    document.addEventListener('DOMNodeRemoved', function(e){
+      modalCount--;
+      utils.defaults.modalCount--;
+      console.log('removed!!');
+    });
+
     //reset our drop-downs and hide instruction text again
     crime.addEventListener('change', function(e){
       if(this.value != "---"){
         loc.style.display = "block";
       }
+      reportCount = 0;
+      utils.defaults.reportCount = 0;
     });
     loc.addEventListener('change', function(){
       if(this.value != "---"){
-        report = crimeReport(crime.value);
         instructionEl[0].style.display = "block";
+        report = app.crimeReport(crime.value);
       }
+      utils.defaults.crime = crime.value;
     });
     
     //trigger modals only on location elements inside map
     for(var i=0, len=locations.length; i<len; i++) {
-      locations[i].addEventListener('click', function(e){ 
-        if(typeof report == undefined) {
+      locations[i].addEventListener('click', function(e){
+        if((typeof report == "undefined") || (loc.value == "---")) {
+          return false;
+        }
+        else if(loc.value.toUpperCase() != this.attributes['class'].value.split(" ")[1].replace(/_/g, ' ').toUpperCase()){
+          alert("Wrong place bucco!");
           return false;
         }
         else{
+          console.log("loc.value: ", loc.value);
           var num = Math.floor((Math.random() * 18)+1),
               hr = Math.floor((Math.random() * 11)+1),
               ampm = times[Math.floor((Math.random() * 1)+1)],
               reportMsg = report(num, hr + ampm, loc.value);
-              buildPopup(e, reportMsg);
+              utils.buildPopup(e, reportMsg);
             }
-        if(reportCount > 15){
-          num = hr = ampm = "";
-          report = "";//stop more elements from being added....
-        }
+          if(reportCount > 15){
+            num = hr = ampm = "";
+            report = "";//stop more elements from being added....
+          }
         });
       }
-      //mapEl.childNodes.addEventListener('click', function(e){ alert('child clicked!'); e.stopPropagation(); })
-      
+    }();
   </script>
 </html>
