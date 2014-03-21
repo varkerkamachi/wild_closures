@@ -51,14 +51,13 @@
             document.writeln(utils.buildSelectMenu(locations, data));
           </script>
           
-          <p class="instructions" data-subject="instructions">Great, now plot it on the map ></p>
         </div><!-- end left col //-->
 
         <div class="right col two_thirds">
           <div id="crime_map">
             <script>
               for(var i=0, max=locations.length; i<max; i++){
-                document.writeln('<div class="map_locations ' + locations[i].toLowerCase().replace(/\s/g, '_') + '"><span>' + locations[i] + '</span></div>');
+                document.writeln('<div class="map_locations ' + app.getLocationClass(locations[i]) + '"><span>' + locations[i] + '</span></div>');
               }
             </script>
           </div>
@@ -71,7 +70,7 @@
   <script>
   document.onReady = function() {
   var mapEl = document.getElementById('crime_map'),
-      locations = document.getElementsByClassName('map_locations'),
+      mapLocations = document.getElementsByClassName('map_locations'),
       popper = utils.buildPopup,
       instructionEl = document.getElementsByClassName('instructions'),
       times = ['am', 'pm'],
@@ -90,35 +89,48 @@
   utils.defaults.instructionEl = document.getElementsByClassName('instructions');
 
     document.addEventListener('DOMNodeInserted', function(e){
-      modalCount++;
-      utils.defaults.modalCount++;
+      console.log('added!!');
     });
 
     document.addEventListener('DOMNodeRemoved', function(e){
-      modalCount--;
-      utils.defaults.modalCount--;
+      // modalCount--;
+      // utils.defaults.modalCount--;
       console.log('removed!!');
     });
 
     //reset our drop-downs and hide instruction text again
     crime.addEventListener('change', function(e){
+      console.log('changed!')
       if(this.value != "---"){
         loc.style.display = "block";
+      }
+      else{
+        loc.value = "---";
+        loc.style.display = "none";
+        utils.removeDOMNode(crime.parentNode, 'user_instructions');
       }
       reportCount = 0;
       utils.defaults.reportCount = 0;
     });
     loc.addEventListener('change', function(){
       if(this.value != "---"){
-        instructionEl[0].style.display = "block";
+        //instructionEl[0].style.display = "block";
+        var options = {
+          'idKey': 'user_instructions',
+          'classKeys': 'instructions',
+          'styleKeys': 'display:block',
+          'dataSubject': 'instructions',
+          'innerText': 'Great, now plot it on the effing map!'
+        };
+        utils.insertDOMNode(this.parentNode, 'p', options);
         report = app.crimeReport(crime.value);
       }
       utils.defaults.crime = crime.value;
     });
     
     //trigger modals only on location elements inside map
-    for(var i=0, len=locations.length; i<len; i++) {
-      locations[i].addEventListener('click', function(e){
+    for(var i=0, len=mapLocations.length; i<len; i++) {
+      mapLocations[i].addEventListener('click', function(e){
         if((typeof report == "undefined") || (loc.value == "---")) {
           return false;
         }

@@ -4,7 +4,7 @@
   }
   
   function Utilities(){
-    this.defaults = {
+    Utilities.prototype.defaults = {
       modalCount: 0,
       crime: '',
       reportCount: 0,
@@ -14,7 +14,31 @@
       zval: 2
     };
     
-    this.buildSelectMenu = function( data, options ){
+    //sets count of a variable by adding or subtracting 1, or resets to 0
+    _resetCount = function( metric, val){
+      if(val == 0)        { Utilities.prototype.defaults[''+metric+''] = 0;}
+      else if(val == -1)  { Utilities.prototype.defaults[''+metric+''] --; }
+      else                { Utilities.prototype.defaults[''+metric+''] ++; }
+      console.log("metric: " + Utilities.prototype.defaults[''+metric+'']);
+
+      if(metric == "modalCount"){
+        return Utilities.prototype.handleModalDependents(Utilities.prototype.defaults[''+metric+'']);
+      }
+      else{
+        return false;
+      }
+    };
+    
+    Utilities.prototype.handleModalDependents = function(val) {
+      if(val < 1){
+        var crimeSelect = this.findDOMNode('crime_selector'),
+        event = new Event('change');
+        crimeSelect.value = "---";
+        crimeSelect.dispatchEvent(event);
+      }
+      
+    };
+    Utilities.prototype.buildSelectMenu = function( data, options ){
       this.nameKey = '',
       this.idKey = '',
       this.elementClassKey = '',
@@ -39,19 +63,15 @@
     };
     
     //close  modals
-    this.closePopper = function(e, id){
+    Utilities.prototype.closePopper = function(e, id){
       var elmToRemove = e.target.parentNode.parentNode;
       var modals = document.querySelectorAll('.crime_modal');
       elmToRemove.parentNode.removeChild(elmToRemove);
-      
-      if(modals.length < 1){
-        this.defaults.crime.value = "---";
-        this.defaults.loc.style.display = "none";
-        this.defaults.instructionEl[0].style.display = "none";
-      }
+      _resetCount('modalCount', -1);
+      //console.log("mcount: " + this.defaults.modalCount);
     };
         
-    this.buildPopup = function(e, msg) {
+    Utilities.prototype.buildPopup = function(e, msg) {
       var modal = document.createElement('div');
       modal.setAttribute('class', 'crime_modal');
       modal.style['z-index'] = this.defaults.zval;
@@ -60,7 +80,6 @@
       
       modal.addEventListener('click', function(e){ e.stopPropagation();});
       
-      var closeThis = this.closePopper;//need for scope on anon function to close
       var tip = document.createElement('div');
       tip.setAttribute('class', 'pointer');
       
@@ -75,7 +94,7 @@
       
       var closer = document.createElement('div');
       closer.setAttribute('class', 'close_button');
-      closer.addEventListener('click', function(e){ return closeThis(e, modal.id);});
+      closer.addEventListener('click', function(e){ return Utilities.prototype.closePopper(e, modal.id);});
       // console.log("mid: " + modal.id);
       
       var closer_text = document.createElement('span');
@@ -100,9 +119,39 @@
       modal.style.left = (xpos-xpos - 110) + 'px';
       modal.style.top = (ypos-ypos - 135) + 'px';
       e.target.appendChild(modal);
-      
+      _resetCount('modalCount', 1);
+    };
+    
+    //appends an element into the DOM
+    //options includes: classKeys, idKey, styleKeys, dataSubject, innerHTML
+    Utilities.prototype.insertDOMNode = function(parent, node, options) {
+      var domNode = document.createElement(node);
+      if(typeof options != "undefined"){
+        this.elementStyleKeys = options.styleKeys;
+        this.idKey = options.idKey;
+        this.elementClassKeys = options.classKeys;
+        this.elementDataSubject = options.dataSubject;
+        this.elementValue = options.innerText;
+      }
+      domNode.setAttribute('id', this.idKey);
+      domNode.setAttribute('class', this.elementClassKeys);
+      domNode.setAttribute('style', this.elementStyleKeys);
+      domNode.setAttribute('data-subject', this.elementDataSubject);
+      domNode.innerHTML = this.elementValue;
+      parent.appendChild(domNode);
+    };
+    
+    Utilities.prototype.findDOMNode = function(nodeId) {
+      return document.getElementById(nodeId);
     };
 
+    //removes an element from the DOM
+    Utilities.prototype.removeDOMNode = function(parent, elmId) {
+      if(typeof elmId == "undefined"){
+        return false;
+      }
+      parent.removeChild(document.getElementById(elmId));
+    };
   }
   
   if(!window.Utils){

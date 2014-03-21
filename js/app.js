@@ -25,9 +25,22 @@
     
     this.getCrimes = function() {
       return this.crimes;
-    }
+    };
     this.getLocations = function() {
       return this.locations;
+    };
+    this.getLocationClass = function( location ){
+      return buildLocationClass(location);
+    };
+    //formats name of location for compound css declaration
+    buildLocationClass = function( location ) {
+      if (typeof location == "undefined" || location.length < 1) {
+        return "";
+      }
+      else {
+        return location.toLowerCase().replace(/\s/g, '_');
+      }
+      
     }
     
     this.buildWarningMessage = function(count) {
@@ -42,7 +55,7 @@
         warningMsg = "This place is extremely dangerous!<br />Stay the hell out of there if you value your life!"
       }
       return warningMsg;
-    }
+    };
     
     this.crimeReport = function(crime){
       var counter=0,
@@ -59,7 +72,7 @@
               self.buildWarningMessage(counter);
         return msg;
       }
-    }
+    };
   }
   
   
