@@ -117,11 +117,19 @@ p {
   line-height:8px;
   color:#696920;
   position:absolute;
+  opacity:0;
+  transition:opacity 1.25s ease-in-out;
 }
 
 .map_locations:hover {
   box-shadow:0 0 4px 5px #6977f8;
   cursor:pointer;
+  transition:box-shadow 0.35s ease-in-out;
+}
+
+.map_locations.location_error,
+.map_locations.location_error:hover {
+  box-shadow:0 0 6px 10px crimson;
   transition:box-shadow 0.35s ease-in-out;
 }
 
@@ -196,6 +204,8 @@ p {
 .close_button {
   font-size:8px;
   position:absolute;
+  width:15px;
+  height:15px;
   top:5px;
   right:5px;
   background:url('../images/close.png') center center no-repeat;
@@ -250,6 +260,7 @@ p {
 
 #location_selector,
 #location_selector + p { display:none; }
+
 
 .footer {
   margin-top:-90px;

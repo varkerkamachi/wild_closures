@@ -55,11 +55,6 @@
 
         <div class="right col two_thirds">
           <div id="crime_map">
-            <script>
-              for(var i=0, max=locations.length; i<max; i++){
-                document.writeln('<div class="map_locations ' + app.getLocationClass(locations[i]) + '"><span>' + locations[i] + '</span></div>');
-              }
-            </script>
           </div>
         </div><!-- end right col //-->
       </div><!-- end inner wrapper //-->
@@ -69,89 +64,16 @@
   </body>
   <script>
   document.onReady = function() {
-  var mapEl = document.getElementById('crime_map'),
-      mapLocations = document.getElementsByClassName('map_locations'),
-      popper = utils.buildPopup,
-      instructionEl = document.getElementsByClassName('instructions'),
-      times = ['am', 'pm'],
+    app.updateDefaultConfig();
+    app.configureLocationSelect({innerText: 'Great, now plot it on the map!'});
+    app.configureCrimeSelect();
+  }();
+  document.onLoad = function() {
+    app.buildMapLocations(locations);
+  }();
+
+  var loc = document.getElementById('location_selector'),
       crime = document.getElementById('crime_selector'),
-      modals = document.querySelectorAll('#crime_map .crime_modal'),
-      report = '',
-      modalCount = 0,
-      reportCount = 0,
-      loc = document.getElementById('location_selector');
-      //default vals for select menus - reset on pageload
-      crime.value = "---";
-      loc.value = "---";
-
-  utils.defaults.mapEl = document.getElementById('crime_map');
-  utils.defaults.loc = document.getElementById('location_selector');
-  utils.defaults.instructionEl = document.getElementsByClassName('instructions');
-
-    document.addEventListener('DOMNodeInserted', function(e){
-      console.log('added!!');
-    });
-
-    document.addEventListener('DOMNodeRemoved', function(e){
-      // modalCount--;
-      // utils.defaults.modalCount--;
-      console.log('removed!!');
-    });
-
-    //reset our drop-downs and hide instruction text again
-    crime.addEventListener('change', function(e){
-      console.log('changed!')
-      if(this.value != "---"){
-        loc.style.display = "block";
-      }
-      else{
-        loc.value = "---";
-        loc.style.display = "none";
-        utils.removeDOMNode(crime.parentNode, 'user_instructions');
-      }
       reportCount = 0;
-      utils.defaults.reportCount = 0;
-    });
-    loc.addEventListener('change', function(){
-      if(this.value != "---"){
-        //instructionEl[0].style.display = "block";
-        var options = {
-          'idKey': 'user_instructions',
-          'classKeys': 'instructions',
-          'styleKeys': 'display:block',
-          'dataSubject': 'instructions',
-          'innerText': 'Great, now plot it on the effing map!'
-        };
-        utils.insertDOMNode(this.parentNode, 'p', options);
-        report = app.crimeReport(crime.value);
-      }
-      utils.defaults.crime = crime.value;
-    });
-    
-    //trigger modals only on location elements inside map
-    for(var i=0, len=mapLocations.length; i<len; i++) {
-      mapLocations[i].addEventListener('click', function(e){
-        if((typeof report == "undefined") || (loc.value == "---")) {
-          return false;
-        }
-        else if(loc.value.toUpperCase() != this.attributes['class'].value.split(" ")[1].replace(/_/g, ' ').toUpperCase()){
-          alert("Wrong place bucco!");
-          return false;
-        }
-        else{
-          console.log("loc.value: ", loc.value);
-          var num = Math.floor((Math.random() * 18)+1),
-              hr = Math.floor((Math.random() * 11)+1),
-              ampm = times[Math.floor((Math.random() * 1)+1)],
-              reportMsg = report(num, hr + ampm, loc.value);
-              utils.buildPopup(e, reportMsg);
-            }
-          if(reportCount > 15){
-            num = hr = ampm = "";
-            report = "";//stop more elements from being added....
-          }
-        });
-      }
-    }();
   </script>
 </html>
