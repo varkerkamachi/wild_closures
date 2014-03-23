@@ -26,10 +26,10 @@
       mapEl: '',
       crime: '',
       loc: '',
+      selectedLocation: '',
+      selectedCrime: '',
       report: '',
       modalCount: 0,
-      reportCount: 0,
-      maxClicks: 10,
       utils: new Utils(),
       times: ['am', 'pm']
     };
@@ -38,9 +38,11 @@
       ====> update defaults called after document has loaded
     */
     App.prototype.updateDefaultConfig = function() {
-      App.prototype.defaults.mapEl  = document.getElementById('crime_map');
-      App.prototype.defaults.loc    = document.getElementById('location_selector');
-      App.prototype.defaults.crime  = document.getElementById('crime_selector');
+      App.prototype.defaults.mapEl                = document.getElementById('crime_map');
+      App.prototype.defaults.loc                  = document.getElementById('location_selector');
+      App.prototype.defaults.selectedLocation     = document.getElementById('location_selector').value;
+      App.prototype.defaults.crime                = document.getElementById('crime_selector');
+      App.prototype.defaults.selectedCrime        = document.getElementById('crime_selector').value;
     };
     
     /*
@@ -73,7 +75,7 @@
                 }), 100);
             }
         })(mapLocations[j]), delay);
-        delay += (delay + 15);
+        delay += (delay + delay);
       }
       App.prototype.configureMapLocations(mapLocations);
     };
@@ -89,24 +91,21 @@
       for(var i=0, len=mapLocations.length; i<len; i++) {
         mapLocations[i].addEventListener('click', function(e){
           //check if the max limit has been reached yet...
-          if(utils.getReportCount() >= App.prototype.defaults.maxClicks){
-            utils.handleReportCount();
-            return false;
-          }
+          utils.handleReportCount(utils.getReportCount());
 
-          if((typeof App.prototype.defaults.report == null) || (App.prototype.defaults.loc.value == "---")){
-            _handleIncorrectLocation(e, _buildLocationClass(App.prototype.defaults.loc));
+          if((typeof App.prototype.defaults.report == null) || (App.prototype.defaults.selectedLocation == "---")){
+            _handleIncorrectLocation(e, _buildLocationClass(App.prototype.defaults.selectedLocation));
             return false;
           }
-          else if(App.prototype.defaults.loc.toUpperCase() != this.attributes['class'].value.split(" ")[1].replace(/_/g, ' ').toUpperCase()){
-            _handleIncorrectLocation(e, _buildLocationClass(App.prototype.defaults.loc));
+          else if(App.prototype.defaults.selectedLocation.toUpperCase() != this.attributes['class'].value.split(" ")[1].replace(/_/g, ' ').toUpperCase()){
+            _handleIncorrectLocation(e, _buildLocationClass(App.prototype.defaults.selectedLocation));
             return false;
           }
           else{
             var num = Math.floor((Math.random() * 6)+1),
                 hr = Math.floor((Math.random() * 11)+1),
                 ampm = App.prototype.defaults.times[Math.floor((Math.random() * 1)+1)],
-                reportMsg = App.prototype.crimeReport(num, hr + ampm, App.prototype.defaults.loc);
+                reportMsg = App.prototype.crimeReport(num, hr + ampm, App.prototype.defaults.selectedLocation);
                 //create popup
                 App.prototype.buildPopup(e, reportMsg);
             }
@@ -172,7 +171,7 @@
       return this.crimes;
     };
     App.prototype.getCurrentCrime = function() {
-      return App.prototype.defaults.crime;
+      return App.prototype.defaults.selectedCrime;
     };
     App.prototype.getLocations = function() {
       return this.locations;
@@ -212,16 +211,14 @@
       var utils = App.prototype.defaults.utils;
       
       App.prototype.defaults.crime.addEventListener('change', function(e){
-        console.log('crime change');
         if(this.value != "---"){
           App.prototype.defaults.loc.style.display = "block";
-          App.prototype.defaults.crime = this.value;
+          App.prototype.defaults.selectedCrime = this.value;
         }
         else{
           App.prototype.defaults.loc.value = "---";
           App.prototype.defaults.loc.style.display = "none";
           utils.removeDOMNode(App.prototype.defaults.crime.parentNode, 'user_instructions');
-          App.prototype.defaults.crime = document.getElementById('crime_selector');
         }
       });
     };
@@ -244,7 +241,7 @@
           };
           utils.insertDOMNode(this.parentNode, 'p', options);
           App.prototype.defaults.report = App.prototype.crimeReport(App.prototype.getCurrentCrime());
-          App.prototype.defaults.loc = this.value;
+          App.prototype.defaults.selectedLocation = this.value;
         }
       });
     };
@@ -270,7 +267,6 @@
       var counter=0,
           arr = [],
           report = '',
-          crime = crime,
           msg = '';
       return function(number, time, location) {
         msg = "<strong>Alert! There has been an incident!</strong><br />" +

@@ -8,9 +8,7 @@
       modalCount: 0,
       crime: '',
       reportCount: 0,
-      mapEl: document.getElementById('crime_map'),
-      instructionEl: document.getElementsByClassName('instructions'),
-      loc: document.getElementById('location_selector'),
+      maxClicks: 10,
       zval: 2
     };
     
@@ -19,7 +17,6 @@
       if(val == 0)        { Utilities.prototype.defaults[''+metric+''] = 0;}
       else if(val == -1)  { Utilities.prototype.defaults[''+metric+''] --; }
       else                { Utilities.prototype.defaults[''+metric+''] ++; }
-      console.log("metric: " + Utilities.prototype.defaults[''+metric+'']);
 
       if(metric == "modalCount"){
         return Utilities.prototype.handleModalDependents(Utilities.prototype.defaults[''+metric+'']);
@@ -28,15 +25,14 @@
         return false;
       }
     };
-    _handleReportCount = function() {
-      var count = Utilities.prototype.defaults.reportCount;
-      if(count > 10){
+    _handleReportCount = function(count) {
+      if(count >= Utilities.prototype.defaults.maxClicks){
         alert("Maximum number of reports created.\nClose map modals to continue.");
         return false;
       }
     };
-    Utilities.prototype.handleReportCount = function(){
-      return _handleReportCount();
+    Utilities.prototype.handleReportCount = function(count){
+      _handleReportCount(count);
     };
     Utilities.prototype.getReportCount = function() {
       return Utilities.prototype.defaults.reportCount;
@@ -84,63 +80,8 @@
       elmToRemove.parentNode.removeChild(elmToRemove);
       _resetCount('modalCount', -1);
       _resetCount('reportCount', -1);
-      //console.log("mcount: " + this.defaults.modalCount);
     };
-    /*
-    Utilities.prototype.buildPopup = function(e, msg) {
-      var modal = document.createElement('div'),
-          app = new CrimeApp(),
-          crime = app.getCurrentCrime(app);//document.getElementById('crime_selector');
-      console.log("ncw: " + crime + "\nval: " + new CrimeApp().valueOf());
-      modal.setAttribute('class', 'crime_modal');
-      modal.style['z-index'] = this.defaults.zval;
-      modal.setAttribute('id', 'crime_modal' + this.defaults.modalCount + '');
-      var zidx = window.getComputedStyle(modal);
-      
-      modal.addEventListener('click', function(e){ e.stopPropagation();});
-      
-      var tip = document.createElement('div');
-      tip.setAttribute('class', 'pointer');
-      
-      var left_col = document.createElement('div');
-      left_col.setAttribute('class', 'col');
-      
-      var modal_img = document.createElement('div');
-      modal_img.setAttribute('class', 'crime_icon ' + crime.toLowerCase().replace(/\s/g, '-') + '');
-      
-      var right_col = document.createElement('div');
-      right_col.setAttribute('class', 'col');
-      
-      var closer = document.createElement('div');
-      closer.setAttribute('class', 'close_button');
-      closer.addEventListener('click', function(e){ return Utilities.prototype.closePopper(e, modal.id);});
-      // console.log("mid: " + modal.id);
-      
-      var closer_text = document.createElement('span');
-      closer_text.innerHTML='close';
-      
-      var text = document.createElement('p');
-      text.innerHTML=msg;
-      
-      closer.appendChild(closer_text);
-      left_col.appendChild(modal_img);
-      right_col.appendChild(text);
-      modal.appendChild(left_col);
-      modal.appendChild(right_col);
-      modal.appendChild(closer);
-      modal.appendChild(tip);
 
-      _resetCount('reportCount', 1);//this.defaults.reportCount++;
-      this.defaults.zval++;
-      
-      var xpos = e.pageX - this.defaults.mapEl.offsetLeft;
-      var ypos = e.pageY - this.defaults.mapEl.offsetTop;
-      modal.style.left = (xpos-xpos - 110) + 'px';
-      modal.style.top = (ypos-ypos - 135) + 'px';
-      e.target.appendChild(modal);
-      _resetCount('modalCount', 1);
-    };
-    */
     //appends an element into the DOM
     //options includes: classKeys, idKey, styleKeys, dataSubject, innerHTML
     Utilities.prototype.insertDOMNode = function(parent, node, options) {
